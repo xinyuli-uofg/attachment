@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Child-Caregiver Interaction Modeling for RAD Assessment</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="container">
+    <header class="hero">
+      <h1>
+        AI-Driven Child-Caregiver Interaction Modeling <br />
+        for RAD Assessment
+      </h1>
+
+      <p class="authors">
+        Xinyu Li<sup>1</sup>, Jingjing Guo<sup>1</sup>, Robin Young<sup>2</sup>,
+        Helen Minnis<sup>2</sup>, and Marwa Mahmoud<sup>1</sup>
+      </p>
+
+      <p class="affiliation">
+        <sup>1</sup>School of Computing Science, University of Glasgow, Glasgow, UK<br />
+        <sup>2</sup>Institute of Health and Wellbeing, University of Glasgow, Glasgow, UK
+      </p>
+    </header>
+
+    <nav class="navbar">
+    <a href="#video-demo">Example Data Sample</a>
+    <a href="#about-rad">About RAD</a>
+    <div class="dropdown">
+      <a href="#dataset" class="dropdown-toggle">Dataset ▾</a>
+      <div class="dropdown-menu">
+        <a href="#dataset">Dataset Structure</a>
+        <a href="#representation">De-identified Behavioral Representation</a>
+        <a href="#patterns">Behaviour Patterns as AI Explanations</a>
+      </div>
+    </div>
+    <a href="#framework">AI Prediction</a>
+    <a href="#paper">Research Paper</a>
+    <a href="#contact">Contact</a>
+  </nav>
+
+    <section id="video-demo" class="section">
+      <h2>🎥 Example Data Sample</h2>
+      <p>
+        The video below presents an example of the interaction data used in this project.
+        <strong>Left:</strong> raw video illustrating child–caregiver interaction dynamics.
+        <strong>Middle:</strong> automatically extracted and tracked body keypoints.
+        <strong>Right:</strong> the de-identified behavioral representation used for analysis.
+      </p>
+
+      <div class="video-wrapper">
+        <video controls poster="assets/h264_cover.jpg">
+          <source src="assets/h264.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+      </div>
+      The raw video is blurred to comply with privacy constraints.
+    </section>
+
+    <section id="about-rad" class="section">
+      <h2>🧠 What is Reactive Attachment Disorder (RAD)?</h2>
+      <p>
+        Reactive Attachment Disorder (RAD) is a serious attachment-related condition that
+        can develop in early childhood, particularly among children who have experienced
+        severe neglect, maltreatment, or disrupted caregiving relationships. Children with
+        RAD may show difficulties in forming healthy emotional bonds, reduced social
+        responsiveness, and atypical interaction patterns with caregivers.
+      </p>
+      <p>
+        Early diagnosis is important because attachment difficulties in early childhood
+        can have long-term consequences for emotional development, mental health, and
+        social functioning. However, conventional assessment often requires substantial
+        clinical expertise and time-intensive observation. Our research explores how
+        multimodal and interpretable AI methods can support the analysis of
+        child-caregiver interactions for RAD assessment.
+      </p>
+    </section>
+
+    <section id="dataset" class="section">
+    <h2>📊 Dataset Structure</h2>
+
+    <p>
+        Our dataset was constructed from clinically assessed child interaction recordings for
+        Reactive Attachment Disorder (RAD) research. After data quality checks and eligibility
+        screening, <strong>275 children</strong> were retained, contributing
+        <strong>723 recorded sessions</strong> and around <strong>2,892 minutes</strong> of video data.
+    </p>
+
+    <div class="dataset-grid">
+
+        <div class="dataset-card">
+        <h3>🧩 Session Types</h3>
+        <p>
+            Up to <strong>3 sessions per child</strong>:<br />
+            • <strong>Child–caregiver play:</strong> naturalistic interaction during free play, capturing relational behaviours and engagement patterns.<br />
+            • <strong>Child–caregiver lunch (mealtime):</strong> everyday interaction context reflecting routine communication and responsiveness.<br />
+            • <strong>Child–researcher WPPSI session:</strong> structured cognitive assessment capturing task-oriented behaviour and interaction with a non-caregiver adult.<br />
+            A 4-minute clip was selected from each recording, requiring
+            both participants to be clearly visible and no third party present.
+        
+        </p>
+        </div>
+
+        <div class="dataset-card">
+        <h3>🏷 Clinical Labels</h3>
+        <p>
+            Each child received a <strong>binary RAD label</strong> based on established
+            clinical measures:
+            <a href="https://www.tandfonline.com/doi/pdf/10.1080/14616734.2018.1499209" target="_blank"><strong>Rating for Inhibited Attachment Behavior (RInAB) (Corval, Belsky, Baptista, Mesquita, & Soares, 2019) </strong></a>
+            and
+            <a href="https://www.sciencedirect.com/science/article/pii/S0890856709610789" target="_blank"><strong>Disturbances of Attachment Interview (DAI) (Smyke, Dumitrescu, & Zeanah, 2002)</strong></a>.
+        </p>
+        </div>
+
+        <div class="dataset-card">
+        <h3>⚖️ AI Subset</h3>
+        <p>
+            For AI experiments, we used a <strong>balanced subset of 100 children</strong>:
+            <strong>50 RAD</strong> and <strong>50 non-RAD</strong>, contributing
+            <strong>300 sessions</strong>.
+        </p>
+        <p>
+            To ensure privacy, all video data were <strong>de-identified</strong> using
+            pose estimation, representing each frame as <strong>2D body keypoints</strong>.
+            This removes identifiable visual information while preserving interactional
+            movement patterns for analysis.
+        </p>
+        </div>
+
+    </section>
+
+    <section id="representation" class="section">
+        <h2>🔒 De-identified Behavioral Representation</h2>
+
+        <p>
+            To support AI-based analysis while protecting participant privacy, all video recordings
+            were converted into a <strong>de-identified behavioral representation</strong> based on
+            body movement over time.
+        </p>
+
+        <p>
+            Instead of analysing raw video frames, each frame was represented using
+            <strong>2D body keypoints</strong> extracted from pose estimation for both the
+            child and the caregiver. This removes identifiable facial and background information
+            while preserving the movement and interaction patterns needed for behavioural analysis.
+        </p>
+
+        <p>
+            To model child–caregiver interaction more explicitly, these body keypoints were organised
+            as a <strong>graph-based structure</strong>. Each keypoint is treated as a node, with
+            links capturing both <strong>within-person body structure</strong> and
+            <strong>between-person interactional relationships</strong>. This allows the model to
+            represent posture, orientation, and coordinated movement while maintaining anonymity.
+        </p>
+
+        <div class="figure-box">
+            <img src="assets/body_keypoints_01.png"
+                alt="Example of the de-identified graph-based body representation used to model child-caregiver interaction" />
+            <p class="figure-caption">
+            <strong>Example of the de-identified graph-based body representation.</strong>
+            Body keypoints represent the child and caregiver, while links capture both
+            within-person skeletal structure and cross-person interactional relationships.
+            This representation preserves behavioural dynamics while removing personally
+            identifiable visual information.
+            </p>
+        </div>
+    </section>
+
+    <section id="patterns" class="section">
+    <h2>🧠 Behaviour Patterns as AI Explanations</h2>
+
+    <p>
+        The model explains child–caregiver interaction through
+        <strong>interpretable behavioural patterns</strong>.
+        Each pattern is illustrated with examples of
+        <span class="low">Lower</span> and <span class="high">Higher</span> scores.
+    </p>
+
+    <div class="pattern-grid-2">
+
+        <!-- Interpersonal Distance -->
+        <div class="pattern-card">
+        <h3>Interpersonal Distance</h3>
+        <p>
+        Measures the normalized physical proximity between the child and caregiver.
+        Lower scores indicate closer proximity, while higher scores indicate greater distance between them.
+        </p>
+        <div class="gif-row">
+            <div class="gif-item">
+            <img src="assets/GIFs/distance_0.35.gif" />
+            <span class="low">Closer proximity</span>
+            </div>
+            <div class="gif-item">
+            <img src="assets/GIFs/distance_0.71.gif" />
+            <span class="high">Greater distance</span>
+            </div>
+        </div>
+        </div>
+
+        <!-- Head Direction -->
+        <div class="pattern-card">
+        <h3>Head Direction</h3>
+        <p>
+        Measures the alignment of the child’s head orientation toward the caregiver.
+        Lower scores indicate the child is looking away, while higher scores indicate the head is directed toward the caregiver.
+        </p>
+        <div class="gif-row">
+            <div class="gif-item">
+            <img src="assets/GIFs/head_direction_0.68.gif" />
+            <span class="low">Looking away</span>
+            </div>
+            <div class="gif-item">
+            <img src="assets/GIFs/head_direction_0.99.gif" />
+            <span class="high">Looking directly</span>
+            </div>
+        </div>
+        </div>
+
+        <!-- Body Direction -->
+        <div class="pattern-card">
+        <h3>Body Direction</h3>
+        <p>
+        Measures the alignment of the child’s torso orientation relative to the caregiver.
+        Lower scores indicate the body is turned away, while higher scores indicate the body is oriented toward the caregiver.
+        </p>
+        <div class="gif-row">
+            <div class="gif-item">
+            <img src="assets/GIFs/body_direction_0.43.gif" />
+            <span class="low">Turned away</span>
+            </div>
+            <div class="gif-item">
+            <img src="assets/GIFs/body_direction_0.95.gif" />
+            <span class="high">Oriented directly</span>
+            </div>
+        </div>
+        </div>
+
+        <!-- Body Openness -->
+        <div class="pattern-card">
+        <h3>Body Openness</h3>
+        <p>
+        Measures how open or closed the child’s posture is based on body configuration.
+        Lower scores indicate a more closed or contracted posture, while higher scores indicate a more open and expanded posture.
+        </p>
+        <div class="gif-row">
+            <div class="gif-item">
+            <img src="assets/GIFs/body_openness_0.45.gif" />
+            <span class="low">Closed posture</span>
+            </div>
+            <div class="gif-item">
+            <img src="assets/GIFs/body_openness_0.75.gif" />
+            <span class="high">Open posture</span>
+            </div>
+        </div>
+        </div>
+
+        <!-- Lean Angle -->
+        <div class="pattern-card">
+        <h3>Lean Angle</h3>
+        <p>
+        Measures the degree to which the child leans relative to the caregiver.
+        Lower scores indicate leaning back, higher scores indicate leaning toward the caregiver, while scores around 0.5 indicate an upright posture.
+        </p>
+        <div class="gif-row">
+            <div class="gif-item">
+            <img src="assets/GIFs/lean_0.07.gif" />
+            <span class="low">Leaning back</span>
+            </div>
+            <div class="gif-item">
+            <img src="assets/GIFs/lean_0.47.gif" />
+            <span class="high">Upright posture</span>
+            </div>
+        </div>
+        </div>
+
+        <!-- Self-Occlusion -->
+        <div class="pattern-card">
+        <h3>Self-Occlusion</h3>
+        <p>
+        Is an estimation of self-adaptors, which measures the extent to which the child’s body or face is occluded by their own limbs or posture.
+        Lower scores indicate minimal self-adaptors, while higher scores indicate greater self-adaptors.
+        </p>
+        <div class="gif-row">
+            <div class="gif-item">
+            <img src="assets/GIFs/self_adaptors_0.06.gif" />
+            <span class="low">Minimal self-adaptors</span>
+            </div>
+            <div class="gif-item">
+            <img src="assets/GIFs/self_adaptors_0.71.gif" />
+            <span class="high">Greater self-adaptors</span>
+            </div>
+        </div>
+        </div>
+
+    </div>
+    </section>
+
+    <section id="framework" class="section">
+    <h2>⚙️ AI-Based RAD Prediction and Interpretation</h2>
+
+    <p>
+      Our AI framework follows a <strong>two-stage design</strong> to analyse
+      child–caregiver interaction in a structured and interpretable way,
+      transforming low-level signals into clinically meaningful behavioural patterns.
+    </p>
+
+    <!-- Stage Overview -->
+    <div class="dataset-grid">
+      <div class="dataset-card">
+        <h3>Stage 1: Session Modelling</h3>
+        <p>
+          De-identified body movement and audio signals are transformed into
+          <strong>behavioural features</strong> (e.g., proximity, orientation, posture).
+          These are integrated over time to produce a
+          <strong>session-level summary and prediction</strong>, with feature
+          contributions estimated to support interpretation.
+        </p>
+      </div>
+
+      <div class="dataset-card">
+        <h3>Stage 2: Child-Level Integration</h3>
+        <p>
+          Summaries from multiple interaction contexts (play, lunch, and WPPSI)
+          are combined to generate a <strong>final child-level prediction</strong>,
+          capturing behaviour across different situations.
+        </p>
+      </div>
+    </div>
+
+    <!-- Framework Figure -->
+    <div class="figure-box">
+      <img src="assets/graphNN.svg"
+          alt="Overview of the AI-based framework for RAD assessment" />
+      <p class="figure-caption">
+        <strong>Overview of the AI-based framework.</strong>
+        In Stage 1 (top), each session is analysed using de-identified body movement
+        and audio to extract interpretable behavioural features and generate a
+        session-level summary. In Stage 2 (bottom), summaries from multiple sessions
+        are integrated to produce a final child-level prediction of RAD.
+      </p>
+    </div>
+    </section>
+
+
+    <section id="publications" class="section">
+      <h2>📄 Research Papers</h2>
+
+      <p>
+        This project builds on ongoing research in AI-based analysis of
+        child–caregiver interaction, as well as clinical work on attachment
+        disorders and early intervention.
+      </p>
+
+      <!-- Current Project -->
+      <div class="dataset-card">
+        <h3>🔬 Current Research Project</h3>
+        <p>
+          <strong>
+            Graph-based Child-Caregiver Interaction Modeling for Automated
+            Attachment Disorder Assessment for Maltreated Preschoolers Placed
+            in Foster Care
+          </strong>
+        </p>
+        <p>
+          <em>Under review — paper available soon.</em>
+        </p>
+      </div>
+
+      <!-- Related Work -->
+      <div class="dataset-card">
+        <h3>📚 Related Work (BeST Service Trial)</h3>
+
+        <p>
+          <strong>
+            Crawford, K., Young, R., Wilson, P., Deidda, M., Forde, M., Millar, S., et al. (2025).
+          </strong><br />
+          Infant mental health services for birth and foster families of maltreated
+          pre-school children in foster care (BeST?): a cluster-randomized phase 3
+          clinical effectiveness trial.<br />
+          <em>Nature Medicine, 31(5), 1617–1625.</em><br />
+          <a href="https://www.nature.com/articles/s41591-025-03534-9.pdf" target="_blank">View Paper</a>
+        </p>
+
+        <p>
+          <strong>
+            Bruce, M., Young, D., Turnbull, S., Rooksby, M., Chadwick, G., Oates, C., et al. (2019).
+          </strong><br />
+          Reactive attachment disorder in maltreated young children in foster care.<br />
+          <em>Attachment & Human Development, 21(2), 152–169.</em><br />
+          <a href="https://www.tandfonline.com/doi/pdf/10.1080/14616734.2018.1499211?casa_token=J3R455MqmPsAAAAA:BhhtfwvWlz3N5yyzmEy74cTwA3P5eezAlBs1fjxCnjWm5LIJoN-1BrdAexvc8Lh4aeWvMQKlPfsPZg" target="_blank">View Paper</a>
+        </p>
+      </div>
+    </section>
+
+    <section id="contact" class="section">
+      <h2>📬 Contact</h2>
+      <p>
+        For questions about the project please contact:
+      </p>
+      <p>
+        <strong>Xinyu Li</strong><br />
+        University of Glasgow<br />
+        <a href="mailto:your-email@student.gla.ac.uk">2637150L@student.gla.ac.uk</a>
+      </p>
+    </section>
+  </div>
+
+</body>
+</html>
